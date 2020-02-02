@@ -8,5 +8,7 @@ chmod -R 777 /work/surveycloud/storage
 # remove node_modules
 # RUN rm -rf /work/surveycloud/node_modules
 
+# npm install
+
 echo "<?php phpinfo();" > /work/surveycloud/public/info.php # とりあえずphpが起動するかテスト
 /usr/sbin/httpd -DFOREGROUND
