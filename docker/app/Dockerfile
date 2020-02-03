@@ -56,8 +56,11 @@ RUN yum clean all
 # install mariadb
 RUN yum install -y mariadb
 
+ARG ENV_DOUCMENT_ROOT
+ARG ENV_SRC_DIRECTORY
+
 # change working directory
-WORKDIR /work/surveycloud/
+WORKDIR ${ENV_DOUCMENT_ROOT}/${ENV_SRC_DIRECTORY}
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # change the path of php command
@@ -69,9 +72,9 @@ RUN sed -ie '354,356d' /etc/httpd/conf/httpd.conf
 # httpsをするのを阻止
 RUN mv /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/ssl.confdisable 
 # Changing document root
-RUN sed -i -e 's#DocumentRoot "/var/www/html"#DocumentRoot "/work/surveycloud/public"#' /etc/httpd/conf/httpd.conf
+RUN sed -i -e 's#DocumentRoot "/var/www/html"#DocumentRoot "${ENV_DOUCMENT_ROOT}/${ENV_SRC_DIRECTORY}/public"#' /etc/httpd/conf/httpd.conf
 RUN echo $'\n\
-<Directory "/work/surveycloud/public">\n\
+<Directory "${ENV_DOUCMENT_ROOT}/${ENV_SRC_DIRECTORY}/public">\n\
     AllowOverride All\n\
     Require all granted\n\
 </Directory>\n\
@@ -105,6 +108,19 @@ RUN npm i -g yarn && yarn global add vue-cli
 
 # remove nodejs
 RUN yum remove -y nodejs
+
+ARG ENV_DB_CONNECTION
+ARG ENV_DB_HOST
+ARG ENV_DB_PORT
+ARG ENV_DB_DATABASE
+ARG ENV_DB_USERNAME
+ARG ENV_DB_PASSWORD
+ARG ENV_DB_ROOT_PASSWORD
+
+
+RUN env
+
+RUN echo $ENV_SRC_DIRECTORY
 
 EXPOSE 80
 COPY entrypoint.sh /etc/entrypoint.sh
