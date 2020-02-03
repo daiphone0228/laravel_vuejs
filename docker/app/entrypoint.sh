@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chmod -R 777 /work/surveycloud/bootstrap/chache
+chmod -R 777 /work/surveycloud/bootstrap/cache
 chmod -R 777 /work/surveycloud/storage
 # cd /work/surveycloud/ && composer install
 
