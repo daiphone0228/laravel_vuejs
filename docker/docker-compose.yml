@@ -5,13 +5,12 @@ services:
     container_name: laravel_mariadb
     build: ./db/
     image: laravel_mariadb
-    # command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci  --default-time-zone=Asia/Tokyo
     restart: always
     environment:
-      MYSQL_DATABASE: test_database
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: passwrord
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ${ENV_DB_DATABASE}
+      MYSQL_USER: ${ENV_DB_USERNAME}
+      MYSQL_PASSWORD: ${ENV_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${ENV_DB_ROOT_PASSWORD}
       TZ: Asia/Tokyo
     ports:
       - 3306:3306
@@ -22,12 +21,20 @@ services:
     build: ./app/
     image: laravel
     restart: always
+    environment:
+      ENV_DB_CONNECTION: ${ENV_DB_CONNECTION}
+      ENV_DB_HOST: ${ENV_DB_HOST}
+      ENV_DB_PORT: ${ENV_DB_PORT}
+      ENV_DB_DATABASE: ${ENV_DB_DATABASE}
+      ENV_DB_USERNAME: ${ENV_DB_USERNAME}
+      ENV_DB_PASSWORD: ${ENV_DB_PASSWORD}
+      ENV_DB_ROOT_PASSWORD: ${ENV_DB_ROOT_PASSWORD}
     ports:
-      - 80:80
+      - ${ENV_APP_PORT}:80
     links:
       - db
     volumes:
-      - ../project:/work/surveycloud
+      - ../project/${ENV_SRC_DIRECTORY}:${ENV_DOUCMENT_ROOT}/${ENV_SRC_DIRECTORY}
     stdin_open: true
     tty: true
     # privileged: true

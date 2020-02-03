@@ -1,7 +1,7 @@
 FROM amazonlinux:2
 
 # TimeZone
-# RUN cp /usr/share/zoneinfo/Japan /etc/localtime
+RUN cp /usr/share/zoneinfo/Japan /etc/localtime
 
 # update yum
 RUN yum update -y \
@@ -20,9 +20,8 @@ RUN yum install -y \
         make \
         mod_ssl \
         wget \
-        unzip
-
-RUN yum install -y tar
+        unzip \
+        tar
 
 # psコマンド等を叩けるようにする
 RUN yum install -y yum-utils
@@ -50,6 +49,7 @@ RUN yum install -y \
         php73-php-PDO \
         php73-php-tokenizer \
         php73-php-xml
+
 # clean cache
 RUN yum clean all
 
@@ -88,23 +88,17 @@ RUN sed -i -e "s|^;date.timezone =.*|date.timezone = Asia/Tokyo|g" /etc/opt/remi
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer
 
-########## ここまでは上手くいってる ##########
-
-
 ##### install nodejs, npm #####
 RUN curl --silent --location https://rpm.nodesource.com/setup_12.x | bash -
-
-
 
 RUN yum install -y nodejs
 
 # RUN npm cache clean -f
-RUN npm install -g npm \
-    && npm install n -g \
+RUN npm install -g npm@6.13.4 \
+    && npm install -g n@6.2.0\
     && n 12.14.1
 
 RUN ln -sf /usr/local/bin/node /usr/bin/node
-RUN node --version && npm --version
 
 # install vue.js
 RUN npm i -g yarn && yarn global add vue-cli
@@ -114,8 +108,6 @@ RUN yum remove -y nodejs
 
 EXPOSE 80
 COPY entrypoint.sh /etc/entrypoint.sh
-# COPY laravel.conf /etc/httpd/conf.d/laravel.conf
-# COPY php.ini /etc/php.ini
 RUN chmod +x /etc/entrypoint.sh
 CMD ["/etc/entrypoint.sh"]
 
