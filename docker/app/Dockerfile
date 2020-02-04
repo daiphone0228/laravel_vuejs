@@ -1,5 +1,16 @@
 FROM amazonlinux:2
 
+# 環境変数定義
+ARG ENV_DOCUMENT_ROOT
+ARG ENV_SRC_DIRECTORY_NAME
+ARG ENV_DB_CONNECTION
+ARG ENV_DB_HOST
+ARG ENV_DB_PORT
+ARG ENV_DB_DATABASE
+ARG ENV_DB_USERNAME
+ARG ENV_DB_PASSWORD
+ARG ENV_DB_ROOT_PASSWORD
+
 # TimeZone
 RUN cp /usr/share/zoneinfo/Japan /etc/localtime
 
@@ -56,11 +67,8 @@ RUN yum clean all
 # install mariadb
 RUN yum install -y mariadb
 
-ARG ENV_DOUCMENT_ROOT
-ARG ENV_SRC_DIRECTORY
-
 # change working directory
-WORKDIR ${ENV_DOUCMENT_ROOT}/${ENV_SRC_DIRECTORY}
+WORKDIR ${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME}
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # change the path of php command
@@ -69,16 +77,15 @@ RUN ln -s /usr/bin/php73 /usr/bin/php
 # setting change Apache
 # httpsをするのを阻止
 RUN sed -ie '354,356d' /etc/httpd/conf/httpd.conf 
-# httpsをするのを阻止
 RUN mv /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/ssl.confdisable 
 # Changing document root
-RUN sed -i -e 's#DocumentRoot "/var/www/html"#DocumentRoot "${ENV_DOUCMENT_ROOT}/${ENV_SRC_DIRECTORY}/public"#' /etc/httpd/conf/httpd.conf
-RUN echo $'\n\
-<Directory "${ENV_DOUCMENT_ROOT}/${ENV_SRC_DIRECTORY}/public">\n\
+RUN sed -i -e "s#DocumentRoot \"/var/www/html\"#DocumentRoot \"${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME}/public\"#" /etc/httpd/conf/httpd.conf
+RUN printf "\n\
+<Directory \"%s/%s/public\">\n\
     AllowOverride All\n\
     Require all granted\n\
 </Directory>\n\
-' >> /etc/httpd/conf/httpd.conf
+" ${ENV_DOCUMENT_ROOT} ${ENV_SRC_DIRECTORY_NAME} >> /etc/httpd/conf/httpd.conf
 
 # setting change php.ini
 RUN sed -i -e "s|^expose_php = On|expose_php = Off|g" /etc/opt/remi/php73/php.ini
@@ -109,20 +116,10 @@ RUN npm i -g yarn && yarn global add vue-cli
 # remove nodejs
 RUN yum remove -y nodejs
 
-ARG ENV_DB_CONNECTION
-ARG ENV_DB_HOST
-ARG ENV_DB_PORT
-ARG ENV_DB_DATABASE
-ARG ENV_DB_USERNAME
-ARG ENV_DB_PASSWORD
-ARG ENV_DB_ROOT_PASSWORD
-
-
 RUN env
 
-RUN echo $ENV_SRC_DIRECTORY
-
 EXPOSE 80
+
 COPY entrypoint.sh /etc/entrypoint.sh
 RUN chmod +x /etc/entrypoint.sh
 CMD ["/etc/entrypoint.sh"]

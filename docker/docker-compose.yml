@@ -28,8 +28,8 @@ services:
         ENV_DB_USERNAME: ${ENV_DB_USERNAME}
         ENV_DB_PASSWORD: ${ENV_DB_PASSWORD}
         ENV_DB_ROOT_PASSWORD: ${ENV_DB_ROOT_PASSWORD}
-        ENV_DOUCMENT_ROOT: ${ENV_DOUCMENT_ROOT}
-        ENV_SRC_DIRECTORY: ${ENV_SRC_DIRECTORY}
+        ENV_DOCUMENT_ROOT: ${ENV_DOCUMENT_ROOT}
+        ENV_SRC_DIRECTORY_NAME: ${ENV_SRC_DIRECTORY_NAME}
     image: laravel
     restart: always
     env_file: 
@@ -39,7 +39,7 @@ services:
     links:
       - db
     volumes:
-      - ../project/${ENV_SRC_DIRECTORY}:${ENV_DOUCMENT_ROOT}/${ENV_SRC_DIRECTORY}
+      - ../project/${ENV_SRC_DIRECTORY_NAME}:${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME}
     stdin_open: true
     tty: true
     # privileged: true
