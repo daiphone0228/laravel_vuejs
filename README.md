@@ -1,8 +1,9 @@
-# laravel_amazonlinux2
+# laravel_vuejs
 
 ## Introduction
 
-本リポジトリは、Dockerをベースとした、AmazonLinux2 + Laravel + vueの開発環境を構築します。
+本リポジトリは、Laravel + vue.jsの環境でいじいじするものです。
+基本作りかけな感じになりますが、ご容赦ください。
 git cloneしてきた時点で"project/"配下にあるLaravelプロジェクトは、[GitHub](https://github.com/laravel/laravel)からcloneしたものになります。
 ご自身のプロジェクトを利用する場合は、"project/"配下を置き換えてください。
 
@@ -117,7 +118,7 @@ bash-4.2# composer install
 Loading composer repositories with package information
 Updating dependencies (including require-dev)
 Package operations: 86 installs, 0 updates, 0 removals
-  - Installing symfony/polyfill-ctype (v1.13.1): Downloading (100%)         
+  - Installing symfony/polyfill-ctype (v1.13.1): Downloading (100%)
   - Installing phpoption/phpoption (1.7.2): Downloading (100%)
   ...
 Discovered Package: nunomaduro/collision
@@ -164,7 +165,7 @@ found 0 vulnerabilities
 ```shell
 bash-4.2# npm run dev
  DONE  Compiled successfully in 8287ms
- 
+
        Asset     Size   Chunks             Chunk Names
 /css/app.css  0 bytes  /js/app  [emitted]  /js/app
   /js/app.js  592 KiB  /js/app  [emitted]  /js/app
