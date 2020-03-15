@@ -10,7 +10,9 @@ git cloneしてきた時点で"project/"配下にあるLaravelプロジェクト
 ## 構築環境
 
 AmazonLinux2
+
 Laravel
+
 Vue.js
 
 ## 想定ディレクトリ構成
@@ -29,6 +31,7 @@ laravel_amazonlinux2/
 ## 事前準備
 
 環境変数を.envファイルにまとめて、そちらを参照する形式となります。
+
 ご自身の環境に応じて変更してください。
 
 ```shell

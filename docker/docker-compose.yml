@@ -2,22 +2,24 @@ version: "3"
 
 services:
   db:
-    container_name: laravel_mariadb
+    container_name: ${ENV_DB_CONTAINER_NAME}
     build: ./db/
-    image: laravel_mariadb
+    image: ${ENV_DB_IMAGE_NAME}
     restart: always
     environment:
       MYSQL_DATABASE: ${ENV_DB_DATABASE}
       MYSQL_USER: ${ENV_DB_USERNAME}
       MYSQL_PASSWORD: ${ENV_DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${ENV_DB_ROOT_PASSWORD}
-      TZ: Asia/Tokyo
+      TZ: ${ENV_TIMEZONE}
     ports:
       - ${ENV_DB_PORT}:3306
+    volumes:
+      - ./db/mysql_data:/var/lib/mysql
     networks:
       - app_net
   app:
-    container_name: laravel
+    container_name: ${ENV_APP_CONTAINER_NAME}
     build:
       context: ./app/
       args:
@@ -30,9 +32,9 @@ services:
         ENV_DB_ROOT_PASSWORD: ${ENV_DB_ROOT_PASSWORD}
         ENV_DOCUMENT_ROOT: ${ENV_DOCUMENT_ROOT}
         ENV_SRC_DIRECTORY_NAME: ${ENV_SRC_DIRECTORY_NAME}
-    image: laravel
+    image: ${ENV_APP_IMAGE_NAME}
     restart: always
-    env_file: 
+    env_file:
       - ./.env
     ports:
       - ${ENV_APP_PORT}:80
@@ -40,10 +42,12 @@ services:
       - db
     volumes:
       - ../project/${ENV_SRC_DIRECTORY_NAME}:${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME}
+      # 1. exclude volumes
+      - ${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME}/vendor
+      - ${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME}/node_modules
     stdin_open: true
     tty: true
-    # privileged: true
-    environment: 
+    environment:
       TZ: Asia/Tokyo
     depends_on:
       - db

@@ -19,7 +19,15 @@ sed -i -e "s|^DB_PASSWORD=.*$|DB_PASSWORD=${ENV_DB_PASSWORD}|g" ${ENV_DOCUMENT_R
 # remove node_modules
 # RUN rm -rf ${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME}/node_modules
 
+cd ${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME} \
+    && composer install \
+    && php artisan key:generate \
+    && php artisan config:clear \
+    && php artisan migrate \
+    && php artisan db:seed \
+    && npm install \
+    && npm run dev
+
 # とりあえずphpが起動するかテスト
 # 不要であれば消してください。
-echo "<?php phpinfo();" > ${ENV_DOCUMENT_ROOT}/${ENV_SRC_DIRECTORY_NAME}/public/info.php
 /usr/sbin/httpd -DFOREGROUND
